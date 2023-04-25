@@ -8,6 +8,9 @@ def iota() -> int:
 
 START   = iota()
 PLUS    = iota()
+MINUS   = iota()
+MULT    = iota()
+DIV     = iota()
 NUMBER  = iota()
 OPAR    = iota() 
 CPAR    = iota() 
@@ -16,6 +19,9 @@ END     = iota()
 ENUMS = [
     "START ",
     "PLUS  ", 
+    "MINUS ", 
+    "MULT  ",
+    "DIV   ",
     "NUMBER", 
     "OPAR  ",
     "CPAR  ",

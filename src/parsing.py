@@ -1,7 +1,6 @@
 class Transformer:
     
-    def to_postfix(expr) -> str:
-        
+    def to_postfix(expr) -> str:    
         operand_stack = []
         final_stack   = []
 
