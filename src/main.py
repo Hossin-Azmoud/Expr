@@ -1,8 +1,28 @@
-
+from lexer import Lexer, Token
+from parsing import Transformer
 is_main = (__name__ == '__main__')
 
 
-def main(): print("Hello, world :)")
+def main():
+    lex = Lexer("1 + 1 + 2 + 3")
+    
+    while not lex.isEmpty():
+        token = lex.next()
+        token.display()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # ENTRY.
