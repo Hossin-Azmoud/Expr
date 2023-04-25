@@ -1,6 +1,9 @@
 from enums import (
     START,
     PLUS,
+    MINUS,
+    MULT,
+    DIV,
     NUMBER,
     OPAR,
     CPAR,
@@ -9,13 +12,30 @@ from enums import (
 
 from token import Token
 
+OPERAND_MAP = {
+    '+':  PLUS,
+    '(':  OPAR,
+    ')':  CPAR,
+    '-':  MINUS,
+    '*':  MULT,
+    '/':  DIV
+}
 
 class Lexer:
-    def __init__(self, src) -> None:
+    def __init__(self, src="") -> None:
         self.src  = src
         self.size = len(self.src)
         self.cur  = 0
     
+    def set(self, src):
+        self.src  = src
+        self.size = len(self.src)
+        self.cur  = 0
+
+    def clear(self):
+        self.src  = ""
+        self.size = 0 
+ 
     def isEmpty(self) -> bool:
         return self.cur == self.size
     
@@ -46,21 +66,21 @@ class Lexer:
          
 
         if len(token_value_buffer) > 0:
-            return Token(NUMBER, token_value_buffer)
+            return Token(
+                NUMBER, 
+                int(token_value_buffer)
+            )
         
-        if self.current == '+': 
-            self.chop()
-            return Token(PLUS, '+') 
-        
-        if self.current == '(': 
+        if self.current in OPERAND_MAP:
             
+            operand = self.current
             self.chop()
-            return Token(OPAR, '(')
+            
+            return Token(
+                OPERAND_MAP[operand], 
+                operand
+            )
 
-        if self.current == ')': 
-            
-            self.chop()
-            return Token(CPAR, ')')
-        
-        return "Unreachable."
+        print(f"Unknwn Token type: {self.current}.")
+        exit(1)
 

@@ -3,13 +3,20 @@ from collections import deque
 class Stack:
 
     def __init__(self):
-        self.stack = list()
-        self.mid: int = len(self.stack) // 2
+        self.base = list()
+        self.mid: int = len(self.base) // 2
+    
+    def reverse(self):
+        tmp = list()
+        while len(self.base) > 0:
+            tmp.append(self.base.pop())
+        
+        self.base = tmp
+
 
     def pop(self):
-
-        if len(self.stack) > 0:
-            return self.stack.pop()
+        if len(self.base) > 0: 
+            return self.base.pop()
 
     def extend(self, list_):
         if len(list_) > 0:
@@ -18,47 +25,55 @@ class Stack:
 
 
     def push(self, data):
-        self.stack.append(data)
+        self.base.append(data)
 
+    def __len__(self) -> int: return len(self.base)
 
-    def __len__(self) -> int: return len(self.stack)
-
-    def __repr__(self) -> str: return repr(self.stack)
+    def __repr__(self) -> str: return repr(self.base)
+    
+    def at(self, index) -> any:
+        
+        size = self.__len__()        
+        if index >= 0 and index < size:
+            return self.base[index]
+        
+        return None
+            
 
     def peek(self):
         
-        if len(self.stack) > 0:
-            return self.stack[-1]
+        if len(self.base) > 0:
+            return self.base[-1]
         
         return None
 
     @property
-    def last(self) -> int: return len(self.stack) - 1
+    def last(self) -> int: return len(self.base) - 1
 
-    def __str__(self) -> str: return str(self.stack)
+    def __str__(self) -> str: return str(self.base)
 
-    def __getitem__(self, item) -> int: return self.stack.index(item)
+    def __getitem__(self, item) -> int: return self.base.index(item)
 
     def __copy__(self) -> list: 
         cp = Stack()
-        cp.extend(self.stack)
+        cp.extend(self.base)
         return cp
 
-    def __sizeof__(self) -> int: return self.stack.__sizeof__()
+    def __sizeof__(self) -> int: return self.base.__sizeof__()
 
     def find(self, data: int) -> int or None:
         
         low = 0
-        high = len(self.stack)
+        high = len(self.base)
         
         while low < high:
             mid = (low + high) // 2
-            if self.stack[mid] < data:
+            if self.base[mid] < data:
                 low = mid + 1
             else:
                 high = mid
-        if low < len(self.stack):
-            if self.stack[low] == data:
+        if low < len(self.base):
+            if self.base[low] == data:
                 return low
             else:
                 return False
@@ -66,7 +81,7 @@ class Stack:
             return False
 
     def sortStack(self) -> bool:
-        self.stack.sort()
+        self.base.sort()
         return True
 
 

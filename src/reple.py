@@ -1,5 +1,6 @@
-from colorama import Fore
-
+from colorama  import Fore
+from parsing   import Transformer
+from lexer     import Lexer
 
 class Reple:
     
@@ -8,7 +9,17 @@ class Reple:
         self.cmds = {
             "Q": self.Quit
         }
+        
+        self.lexer       = Lexer()
     
+    def evaluate_expr(self, expr):
+        self.lexer.set(expr)
+        
+        parser = Transformer(self.lexer)
+        parser.to_postfix() 
+        parser.evaluate_stack() 
+        
+        print(parser.stack.pop())
 
     def parse_cmd(self, cmd):
         return cmd.upper().strip()
@@ -27,5 +38,5 @@ class Reple:
                     continue
                 
                 # it is not a command, but an expr
-                print("EXPR: ", command.strip())
+                self.evaluate_expr(command.strip())
 

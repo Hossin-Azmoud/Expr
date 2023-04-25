@@ -23,6 +23,5 @@ ans: 8
 ```
 
 # What data structure I think I will use for this
-- Stacks
-- Queues
-- Trees (Probably)
+- Stacks: for simple calculations
+- Trees:  for more complex computation.

@@ -1,5 +1,70 @@
+from structures import Stack
+from enums import (
+    START,
+    PLUS,
+    MINUS,
+    DIV,
+    NUMBER,
+    OPAR,
+    CPAR,
+    END
+)
+from token import Token
+
 class Transformer:
+
+    def __init__(self, lexer):
+        self.lexer   = lexer
+        self.stack   = Stack()
     
+    def to_postfix(self):
+        tmp = Stack()
+        
+        while not self.lexer.isEmpty():
+            token = self.lexer.next()
+            
+            if not token.is_number():
+                
+                if len(tmp) > 0: self.stack.push(tmp.pop())
+                tmp.push(token)
+                continue
+            
+            self.stack.push(token)
+        
+        if len(tmp) > 0:
+            self.stack.push(tmp.pop())
+        
+        self.stack.reverse()
+    
+    def dump_stack(self):
+         
+        it = len(self.stack) - 1
+
+        while it >= 0:
+            print(self.stack.at(it))
+            it -= 1
+            
+    
+    def clear_stack(self):
+        self.stack = Stack()
+    
+    def evaluate_stack(self):
+        while len(self.stack) > 2:
+            n        = self.stack.pop().value
+            m        = self.stack.pop().value
+            operand  = self.stack.pop()
+
+            if operand.token_type == PLUS: 
+                self.stack.push(Token(NUMBER, m + n))
+                continue
+
+            if operand.token_type == MINUS: 
+                self.stack.push(Token(NUMBER, n - m))
+                continue
+
+            print(f"Unsupported operand {operand.value}")
+
+"""
     def to_postfix(expr) -> str:    
         operand_stack = []
         final_stack   = []
@@ -31,7 +96,7 @@ class Transformer:
         print(final_stack)
 
         return final_stack
-
+"""
 
 
 

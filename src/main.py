@@ -4,16 +4,20 @@ from structures import Stack
 from reple      import Reple
 
 is_main = (__name__ == '__main__')
+def parsing_test():
+    lex = Lexer("1 - 1 + 2 - 3") # Give the expression to the lexer.
+    parser = Transformer(lex)
+    parser.to_postfix()
+    print("BEFORE EVAL: ")
+    parser.dump_stack()
+    parser.evaluate_stack()
+    print("AFTER EVAL: ")
+    parser.dump_stack()
 
 def Stack_Test():
-    """
-    lex = Lexer("1 + 1 + 2 + 3") 
-    while not lex.isEmpty():
-        token = lex.next()
-        token.display()
-    """
     stack = Stack()
     lst = [1, 2, 3, 4, 5, 6] 
+    
     for i in lst:
         print(f"PUSHING: {i}") 
         stack.push(i)
