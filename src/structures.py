@@ -1,11 +1,21 @@
 from collections import deque
-
+from constants   import OK, ERROR
+from colorama    import Fore
 class Stack:
+    
 
     def __init__(self):
         self.base = list()
         self.mid: int = len(self.base) // 2
     
+    def contains(self, k) -> bool:
+        
+        for i in self.base:
+            if i == k:
+                return True
+        
+        return False
+
     def reverse(self):
         tmp = list()
         
@@ -133,6 +143,25 @@ class Queue(object):
        self.queue.pop()
 
 
+class Result:
+    def __init__(self, code, msg=None):
+        self.code    = code
+        self.message = msg
+    
+    def report(self):
+        if Isok(self):
+            print("{Fore.GREEN}SUCCESS")
+            print(f"{Fore.RESET}")
+            return
+        
+        print()
+        print(f"{Fore.RED}ERROR: {self.message}")
+        print(f"{Fore.RESET}")
+
+
+def err(err_text) -> Result: return Result(ERROR, err_text)
+def ok() -> Result:          return Result(OK)
+def Isok(res: Result):       return (res.code == OK)
 
 class Node:
     def __init__(self, data, left=None, right=None):

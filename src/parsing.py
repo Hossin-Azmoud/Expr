@@ -1,4 +1,9 @@
-from structures import Stack
+from structures import (
+    Stack,
+    ok,
+    err,
+    Result
+)
 
 from enums import (
     START,
@@ -23,7 +28,7 @@ class Transformer:
         self.lexer   = lexer
         self.stack   = Stack()
     
-    def to_postfix(self):
+    def to_postfix(self) -> Result:
         tmp = Stack()
         while not self.lexer.isEmpty():
             token = self.lexer.next()
@@ -35,19 +40,18 @@ class Transformer:
                 continue
             
             if token.token_type == CPAR:    
+                if prev:
+                    while prev.token_type != OPAR and len(tmp) > 0:
+                        self.stack.push(prev)
+                        tmp.pop()
+                        prev = tmp.peek()
+                        if not prev: break
+                    if prev:
+                        if prev.token_type == OPAR: 
+                            tmp.pop()
+                            continue
 
-                while prev.token_type != OPAR and len(tmp) > 0:
-
-                    self.stack.push(prev)
-                    tmp.pop()
-                    prev = tmp.peek()
-               
-                if prev.token_type == OPAR: 
-                    tmp.pop()
-                
-                else:
-                    print(f"Expected ( but found : { prev } ")
-                    exit(1) 
+                return err(f"A non closed bracket accurred!")
 
             if token.token_type == OPAR:
                 tmp.push(token)
@@ -58,17 +62,19 @@ class Transformer:
                     if PREC_TABLE[token.value] > PREC_TABLE[prev.value]:
                         tmp.push(token)
                         continue
-
+                    
                     while PREC_TABLE[token.value] <= PREC_TABLE[prev.value] and prev.value != token.value:
                         self.stack.push(prev)
                         tmp.pop()
                         prev = tmp.peek()
+                        
                         if not prev:
                             break
 
+                        if prev.value not in PREC_TABLE:
+                            break
+
                 tmp.push(token)
-
-
            
         while len(tmp) > 0: 
             self.stack.push(tmp.pop())
@@ -76,7 +82,12 @@ class Transformer:
         
         # reverse the stack.
         self.stack.reverse()
-    
+        
+        if self.stack.contains(Token(OPAR, '(')) or self.stack.contains(Token(CPAR, ')')):
+            return err(f"A non closed bracket accurred!")
+
+        return ok()
+
     def dump_stack(self):
          
         it = len(self.stack) - 1
@@ -89,7 +100,7 @@ class Transformer:
     def clear_stack(self):
         self.stack = Stack()
     
-    def evaluate_stack_(self) -> bool:
+    def evaluate_stack_(self) -> Result:
         res = Stack()
         
         while len(self.stack) > 0:
@@ -112,6 +123,9 @@ class Transformer:
                     continue
                 
                 if l.value == '/':
+                    if a == 0:
+                        return err("Division by zero error.")
+
                     res.push(Token(NUMBER, b / a))
                     continue
                 
@@ -119,13 +133,12 @@ class Transformer:
                     res.push(Token(NUMBER, b ** a))
                     continue
                 
-                print(f"Unsupported operand { l }")
-                exit(1)
-
+                return err(f"Unsupported operand { l }")
+            
             res.push(l)
         
         self.stack.push(res.pop())
-        return True
+        return ok()
         
     def evaluate_stack(self):
         while len(self.stack) > 2:
@@ -147,7 +160,6 @@ class Transformer:
             if operand.token_type == MULT:
                 if m == 0:
                     print(f"Division by zero {n}/{m}")
-
                     return False
                 
                 self.stack.push(Token(NUMBER, n / m))

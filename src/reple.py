@@ -1,6 +1,7 @@
-from colorama  import Fore
-from parsing   import Transformer
-from lexer     import Lexer
+from colorama   import Fore
+from parsing    import Transformer
+from lexer      import Lexer
+from structures import Isok
 
 class Reple:
     
@@ -16,10 +17,19 @@ class Reple:
         self.lexer.set(expr)
         
         parser = Transformer(self.lexer)
-        parser.to_postfix() 
-        parser.evaluate_stack_() 
+        r = parser.to_postfix()
+
+        if not Isok(r):
+            r.report()
+            return
+
+        r = parser.evaluate_stack_() 
         
-        print(parser.stack.pop())
+        if Isok(r):
+            print(parser.stack.pop())
+            return        
+
+        r.report()
 
     def parse_cmd(self, cmd):
         return cmd.upper().strip()
