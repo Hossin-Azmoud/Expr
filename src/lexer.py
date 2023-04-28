@@ -52,7 +52,6 @@ class Lexer:
     
     def trim_spaces(self):
         while not self.isEmpty() and self.current.isspace():
-            
             self.chop()
             
     def next(self) -> Token:

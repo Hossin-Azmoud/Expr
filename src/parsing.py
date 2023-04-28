@@ -1,4 +1,5 @@
 from structures import Stack
+
 from enums import (
     START,
     PLUS,
@@ -9,7 +10,10 @@ from enums import (
     CPAR,
     END
 )
+
 from token import Token
+
+
 
 class Transformer:
 
@@ -25,15 +29,21 @@ class Transformer:
             
             if not token.is_number():
                 
-                if len(tmp) > 0: self.stack.push(tmp.pop())
+                if len(tmp) > 0:
+                    if tmp.peek().token_type == PLUS: 
+                        self.stack.push(tmp.pop())
+                
                 tmp.push(token)
                 continue
             
             self.stack.push(token)
         
-        if len(tmp) > 0:
-            self.stack.push(tmp.pop())
+        # Pop the left operands.
+        if len(tmp) > 0: 
+            while len(tmp) > 0:
+                self.stack.push(tmp.pop())
         
+        # reverse the stack.
         self.stack.reverse()
     
     def dump_stack(self):
@@ -61,8 +71,24 @@ class Transformer:
             if operand.token_type == MINUS: 
                 self.stack.push(Token(NUMBER, n - m))
                 continue
+            if operand.token_type == MULT:
+                self.stack.push(Token(NUMBER, n * m))
+                continue
+            
+            if operand.token_type == MULT:
+                if m == 0:
+                    print(f"Division by zero {n}/{m}")
+
+                    return False
+                
+                self.stack.push(Token(NUMBER, n / m))
+                continue           
+
+
 
             print(f"Unsupported operand {operand.value}")
+        
+        return True
 
 """
     def to_postfix(expr) -> str:    

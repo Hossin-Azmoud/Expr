@@ -8,7 +8,8 @@ class Stack:
     
     def reverse(self):
         tmp = list()
-        while len(self.base) > 0:
+        
+        while len(self.base) > 0: 
             tmp.append(self.base.pop())
         
         self.base = tmp
@@ -45,7 +46,7 @@ class Stack:
         if len(self.base) > 0:
             return self.base[-1]
         
-        return None
+        return False 
 
     @property
     def last(self) -> int: return len(self.base) - 1
@@ -131,3 +132,18 @@ class Queue(object):
     def popRight(self) -> None:
        self.queue.pop()
 
+
+
+class Node:
+    def __init__(self, data, left=None, right=None):
+        self.data  = data
+        self.right = right
+        self.left  = left
+    
+    def __repr__(self): return self.__str__()
+    def __str__(self):  
+        return f"""
+        data: { self.data }
+        left: {self.left}
+        right: {self.right}
+    """
