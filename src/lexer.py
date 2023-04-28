@@ -4,6 +4,7 @@ from enums import (
     MINUS,
     MULT,
     DIV,
+    POW,
     NUMBER,
     OPAR,
     CPAR,
@@ -18,7 +19,8 @@ OPERAND_MAP = {
     ')':  CPAR,
     '-':  MINUS,
     '*':  MULT,
-    '/':  DIV
+    '/':  DIV,
+    '^':  POW
 }
 
 class Lexer:
@@ -69,7 +71,7 @@ class Lexer:
                 NUMBER, 
                 int(token_value_buffer)
             )
-        
+       
         if self.current in OPERAND_MAP:
             
             operand = self.current

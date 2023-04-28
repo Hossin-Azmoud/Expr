@@ -37,15 +37,9 @@ def print_stack(s: Stack, name: str):
         print(i, end=" ")
 
 
+def Shunting_yard():
 
-def main():
-    prec = {
-        '^': 4,
-        '*': 3,
-        '/': 3,
-        '+': 2,
-        '-': 2
-    }
+    
 
 
     # 3 4 2 × 1 5 − 2 3 ^ ^ ÷ + 
@@ -58,18 +52,9 @@ def main():
     i  = 0
     
     while i < len(op):
-        
 
         o    = op[i]
         prev = op_stack.peek()
-        print(o) 
-        if o == '-':
-            print(f"\n{'-'*5}({i}){'-'*5}\n")
-            print_stack(op_stack, "OP")
-            print()
-            print_stack(output, "OUT")
-            print("\n--------------------------\n")
-
 
         if o.isspace():
             i += 1 
@@ -117,8 +102,49 @@ def main():
     while len(op_stack) > 0: 
         output.push(op_stack.pop())
     
+    output.reverse()
+    
     print_stack(output, "FINAL")
+    # Eval the stack.
+    res = Stack()
+    
+    while len(output) > 0:
+        l = output.pop()
+        
+        if l in prec:
+            a = res.pop()
+            b = res.pop()
 
+            if l == '+':
+                res.push(a + b)
+                continue
+            
+            if l == '-':
+                res.push(b - a)
+                continue
+            
+            if l == '*':
+                res.push(b * a)
+                continue
+            
+            if l == '/':
+                res.push(b / a)
+                continue
+            
+            if l == '^':
+                res.push(b ** a)
+                continue
+            
+            print(f"Unsupported operand { l }")
+            exit(1)
+
+        res.push(l)
+        
+    print_stack(res, "result")
+
+
+def main():
+    Reple_Test()
 
 # ENTRY.
 (

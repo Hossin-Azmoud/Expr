@@ -11,6 +11,8 @@ PLUS    = iota()
 MINUS   = iota()
 MULT    = iota()
 DIV     = iota()
+POW     = iota()
+
 NUMBER  = iota()
 OPAR    = iota() 
 CPAR    = iota() 
@@ -22,15 +24,10 @@ ENUMS = [
     "MINUS ", 
     "MULT  ",
     "DIV   ",
-    "NUMBER", 
+    "POW   ",
+    "NUMBER",
     "OPAR  ",
     "CPAR  ",
     "END   "
 ]
-
-
-
-
-
-
 

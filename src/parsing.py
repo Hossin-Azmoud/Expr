@@ -4,6 +4,7 @@ from enums import (
     START,
     PLUS,
     MINUS,
+    MULT,
     DIV,
     NUMBER,
     OPAR,
@@ -11,7 +12,8 @@ from enums import (
     END
 )
 
-from token import Token
+from token     import Token
+from constants import PREC_TABLE 
 
 
 
@@ -23,25 +25,54 @@ class Transformer:
     
     def to_postfix(self):
         tmp = Stack()
-        
         while not self.lexer.isEmpty():
             token = self.lexer.next()
             
-            if not token.is_number():
-                
-                if len(tmp) > 0:
-                    if tmp.peek().token_type == PLUS: 
-                        self.stack.push(tmp.pop())
-                
-                tmp.push(token)
+            prev = tmp.peek()
+
+            if token.is_number(): 
+                self.stack.push(token)
                 continue
             
-            self.stack.push(token)
+            if token.token_type == CPAR:    
+
+                while prev.token_type != OPAR and len(tmp) > 0:
+
+                    self.stack.push(prev)
+                    tmp.pop()
+                    prev = tmp.peek()
+               
+                if prev.token_type == OPAR: 
+                    tmp.pop()
+                
+                else:
+                    print(f"Expected ( but found : { prev } ")
+                    exit(1) 
+
+            if token.token_type == OPAR:
+                tmp.push(token)
+                continue
+
+            if token.value in PREC_TABLE:
+                if prev and prev.value in PREC_TABLE:
+                    if PREC_TABLE[token.value] > PREC_TABLE[prev.value]:
+                        tmp.push(token)
+                        continue
+
+                    while PREC_TABLE[token.value] <= PREC_TABLE[prev.value] and prev.value != token.value:
+                        self.stack.push(prev)
+                        tmp.pop()
+                        prev = tmp.peek()
+                        if not prev:
+                            break
+
+                tmp.push(token)
+
+
+           
+        while len(tmp) > 0: 
+            self.stack.push(tmp.pop())
         
-        # Pop the left operands.
-        if len(tmp) > 0: 
-            while len(tmp) > 0:
-                self.stack.push(tmp.pop())
         
         # reverse the stack.
         self.stack.reverse()
@@ -58,6 +89,44 @@ class Transformer:
     def clear_stack(self):
         self.stack = Stack()
     
+    def evaluate_stack_(self) -> bool:
+        res = Stack()
+        
+        while len(self.stack) > 0:
+            l = self.stack.pop()
+            
+            if l.value in PREC_TABLE:
+                a = res.pop().value
+                b = res.pop().value
+
+                if l.value == '+':
+                    res.push(Token(NUMBER , a + b))
+                    continue
+                
+                if l.value == '-':
+                    res.push(Token(NUMBER, b - a))
+                    continue
+                
+                if l.value == '*':
+                    res.push(Token(NUMBER, b * a))
+                    continue
+                
+                if l.value == '/':
+                    res.push(Token(NUMBER, b / a))
+                    continue
+                
+                if l.value == '^':
+                    res.push(Token(NUMBER, b ** a))
+                    continue
+                
+                print(f"Unsupported operand { l }")
+                exit(1)
+
+            res.push(l)
+        
+        self.stack.push(res.pop())
+        return True
+        
     def evaluate_stack(self):
         while len(self.stack) > 2:
             n        = self.stack.pop().value
@@ -83,8 +152,6 @@ class Transformer:
                 
                 self.stack.push(Token(NUMBER, n / m))
                 continue           
-
-
 
             print(f"Unsupported operand {operand.value}")
         

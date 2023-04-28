@@ -24,4 +24,10 @@ ans: 8
 
 # What data structure I think I will use for this
 - Stacks: for simple calculations
-- Trees:  for more complex computation.
+
+# Resources
+
+- [Shunting yard algorithm](https://en.wikipedia.org/wiki/Shunting_yard_algorithm#Detailed_examples)
+- [Shunting yard algorithm 2](https://mathcenter.oxford.emory.edu/site/cs171/shuntingYardAlgorithm/#:~:text=If%20the%20incoming%20symbol%20is,left%20parenthesis%20and%20discard%20it.)
+- [Evaluating the postfix expression](https://www.boardinfinity.com/blog/postfix-expression/)
+

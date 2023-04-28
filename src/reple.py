@@ -17,7 +17,7 @@ class Reple:
         
         parser = Transformer(self.lexer)
         parser.to_postfix() 
-        parser.evaluate_stack() 
+        parser.evaluate_stack_() 
         
         print(parser.stack.pop())
 
