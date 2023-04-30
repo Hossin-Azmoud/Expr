@@ -20,34 +20,114 @@ from enums import (
 from token     import Token
 from constants import PREC_TABLE 
 
-
+def dump_stack(stack, label):
+    
+    print()
+    
+    print(label)
+    it = 0 
+    print("[", end=" ")
+    
+    while it < len(stack):
+        print(stack.at(it), end=" ")
+        it += 1
+    
+    print("]", end=" \n")
+    
+    print()
 
 class Transformer:
 
-    def __init__(self, lexer):
+    def __init__(self, lexer=None):
         self.lexer   = lexer
         self.stack   = Stack()
-    
+        
+    def JIT_postfix(self, toks: list[Token]) -> Result:
+        self.stack = Stack()
+        tmp        = Stack()
+        it         = 0
+        
+        while it < len(toks):
+            prev  = tmp.peek()
+            token  = toks[it]
+            it += 1
+
+            if token.is_number(): 
+                self.stack.push(token)
+                continue
+            
+            if token.token_type == CPAR:   # )
+                if prev: 
+                    while prev.token_type != OPAR and len(tmp) > 0:
+                        
+                        self.stack.push(prev) #out... 
+                        tmp.pop() # operand... + 
+                        prev = tmp.peek()
+                        if not prev: break
+                    
+                    if prev:
+                        if prev.token_type == OPAR:
+                            tmp.pop()
+                            continue
+
+                return err(f"A non closed bracket accurred!")
+
+            if token.token_type == OPAR:
+                tmp.push(token)
+                continue
+
+            if token.value in PREC_TABLE:
+                if prev and prev.value in PREC_TABLE:
+                    if PREC_TABLE[token.value] > PREC_TABLE[prev.value]:
+                        tmp.push(token)
+                        continue
+                    
+                    while PREC_TABLE[token.value] <= PREC_TABLE[prev.value] and prev.value != token.value:
+                        self.stack.push(prev)
+                        tmp.pop()
+                        prev = tmp.peek()
+                        
+                        if not prev:
+                            break
+
+                        if prev.value not in PREC_TABLE:
+                            break
+
+                tmp.push(token)
+        
+        while len(tmp) > 0: 
+            self.stack.push(tmp.pop())
+        
+        # reverse the stack.
+        self.stack.reverse()
+
+        if self.stack.contains(Token(OPAR, '(')) or self.stack.contains(Token(CPAR, ')')):
+            return err(f"A non closed bracket accurred!")
+
+        return ok()
+
     def to_postfix(self) -> Result:
         tmp = Stack()
         while not self.lexer.isEmpty():
+           
             token = self.lexer.next()
-            
             prev = tmp.peek()
 
             if token.is_number(): 
                 self.stack.push(token)
                 continue
             
-            if token.token_type == CPAR:    
-                if prev:
+            if token.token_type == CPAR:   # )
+                if prev: 
                     while prev.token_type != OPAR and len(tmp) > 0:
-                        self.stack.push(prev)
-                        tmp.pop()
+                        
+                        self.stack.push(prev) #out... 
+                        tmp.pop() # operand... + 
                         prev = tmp.peek()
                         if not prev: break
+                    
                     if prev:
-                        if prev.token_type == OPAR: 
+                        if prev.token_type == OPAR:
                             tmp.pop()
                             continue
 
@@ -88,14 +168,7 @@ class Transformer:
 
         return ok()
 
-    def dump_stack(self):
-         
-        it = len(self.stack) - 1
-
-        while it >= 0:
-            print(self.stack.at(it))
-            it -= 1
-            
+           
     
     def clear_stack(self):
         self.stack = Stack()
@@ -168,40 +241,3 @@ class Transformer:
             print(f"Unsupported operand {operand.value}")
         
         return True
-
-"""
-    def to_postfix(expr) -> str:    
-        operand_stack = []
-        final_stack   = []
-
-        for i, v in enumerate(expr):
-            
-            if v.isspace(): continue
-            
-            if v == '+' or v == '-' or v == '*':
-
-                if len(operand_stack) > 0: 
-                    final_stack.append(operand_stack.pop())
-                        
-                operand_stack.append(v)
-                continue
-            
-            if v.isdigit():
-                final_stack.append(int(v))
-                continue
-            
-            else:
-                print("Unsupported: ", v)
-                exit(1)
-         
-        if len(operand_stack) > 0: 
-            final_stack.append(operand_stack.pop())
-
-        final_stack.reverse()
-        print(final_stack)
-
-        return final_stack
-"""
-
-
-

@@ -12,16 +12,10 @@ class Token:
         return self.__str__()
     
     def __str__(self) -> str:
-        return f"{self.value}"
+        T = ENUMS[self.token_type]
+        return f"{self.value} | {T}"
+    
     def __eq__(self, other) -> bool: return (self.value == other.value)
 
-
-    def display(self):
-        t = ENUMS[self.token_type]
-
-        print(f"""
-type: {t}
-v:    {self.value}
-""")
 
 

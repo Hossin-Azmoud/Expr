@@ -1,8 +1,11 @@
-from lexer      import Lexer, Token
-from parsing    import Transformer
-from structures import Stack
-from reple      import Reple
+from   func       import define_func
+from   lexer      import Lexer, Token
+from   parsing    import Transformer
+from   structures import Stack
+from   reple      import Reple
+import enums
 
+FNC_TABLE = {}
 is_main = (__name__ == '__main__')
 
 def parsing_test():
@@ -145,6 +148,82 @@ def Shunting_yard():
 
 def main():
     Reple_Test()
+
+def read_source(f: str) -> Lexer:
+    with open(f) as code:
+        return Lexer(code.read())
+
+def funcsss():
+    fs: dict = {}
+
+    # lex = Lexer("Func Add(a, b) => | a + b |") # Give the expression to the lexer.
+
+    lex = read_source("source.math")
+    
+    while not lex.isEmpty():
+        T = lex.next()
+        
+        if T.token_type == enums.FUNC:
+            fn = define_func(lex)            
+            # fn.ast()
+            
+            fs[fn.name] = fn
+        
+        if T.token_type == enums.FUNC_CALL:
+            if T.value in fs:
+                fn = fs[T.value]
+                args = []
+                
+                while not lex.isEmpty():
+                    T = lex.next()
+                    
+                    if T.token_type == enums.OPAR: continue
+                    if T.token_type == enums.CPAR: 
+                        break
+
+                    if T.token_type == enums.NUMBER:
+                        args.append(T)
+                
+                if T.token_type != enums.CPAR:
+                    print(f"Expected closing parent.. got {T.value}")
+                    exit(1)
+                    
+                cach = fn.call(args)
+                parser = Transformer()
+                
+                parser.clear_stack()
+                
+                parser.JIT_postfix(cach)
+                r = parser.evaluate_stack_()
+                
+                if r.code == 200: 
+                    print(parser.stack.pop().value)
+                    
+                
+                continue
+             
+            print(f"Function {T.value} is not defined !")
+            exit(1)
+           
+
+
+def fizzbuzz():
+    mam = {
+        3: "fizz",
+        5: "buzz",
+        1: "Poof"
+    }
+
+    def fizzbuzz(n: int):
+        buff = ""
+        for k in mam: 
+            if n % k == 0: 
+                buff += mam[k]
+
+        print(n, " : ", buff)
+
+    for i in range(0, 100): fizzbuzz(i) 
+
 
 # ENTRY.
 (

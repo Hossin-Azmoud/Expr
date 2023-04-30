@@ -1,3 +1,4 @@
+
 1.  While there are tokens to be read:
 2.        Read a token
 3.        If it's a number add it to queue
@@ -11,9 +12,122 @@
 11.                     Pop operators from the stack onto the output queue.
 12.             Pop the left bracket from the stack and discard it
 13. While there are operators on the stack, pop them to the queue
+
 - PRECEDENCE TABLE:
 [^    4]
 [*    3]
 [\    3]
 [+    2]
 [-    2]
+precedence = {
+ '^': 4,
+ '*': 3,
+ '\': 3,
+ '+': 2,
+ '-': 2,
+}
+
+c   = "1 + 1"
+op  = stack() // + - / * () ^ sin cos
+out = stack() // -inf, +inf
+
+Op =     [+]
+Number = [1, 1]
+
+1 + (2 * 3 * 3)
+
+number = [1, 2, 3, 3]
+Op     = [+, (, *, * )]
+result = (3 2 *)
+
+for char in c:
+	last = op.peek()
+	
+	if c == number: 
+		out.push(int(c))
+		continue;
+
+	if c == operator:
+		if last: // TRUE...
+			if 
+			if precedence[c] >= precedence[last]:
+				op.push(c)
+				continue;
+			
+			if precedence[c] < precedence[last]:
+				While precedence[c] < precedence[last] and last:
+					out.push(last)
+					op.pop()
+					last = op.peek()
+					
+					if not last: break
+
+	
+		op.push(c)
+
+
+            token = self.lexer.next()
+            
+            prev = tmp.peek()
+
+            if token.is_number(): 
+                self.stack.push(token)
+                continue
+            
+            if token.token_type == CPAR:    
+                if prev:
+                    while prev.token_type != OPAR and len(tmp) > 0:
+                        self.stack.push(prev)
+                        tmp.pop()
+                        prev = tmp.peek()
+                        if not prev: break
+                    if prev:
+                        if prev.token_type == OPAR: 
+                            tmp.pop()
+                            continue
+
+                return err(f"A non closed bracket accurred!")
+
+            if token.token_type == OPAR:
+                tmp.push(token)
+                continue
+
+            if token.value in PREC_TABLE:
+                if prev and prev.value in PREC_TABLE:
+                    if PREC_TABLE[token.value] > PREC_TABLE[prev.value]:
+                        tmp.push(token)
+                        continue
+                    
+                    while PREC_TABLE[token.value] <= PREC_TABLE[prev.value] and prev.value != token.value:
+                        self.stack.push(prev)
+                        tmp.pop()
+                        prev = tmp.peek()
+                        
+                        if not prev:
+                            break
+
+                        if prev.value not in PREC_TABLE:
+                            break
+
+                tmp.push(token)
+           
+        while len(tmp) > 0: 
+            self.stack.push(tmp.pop())
+        
+        
+        # reverse the stack.
+        self.stack.reverse()
+        
+        if self.stack.contains(Token(OPAR, '(')) or self.stack.contains(Token(CPAR, ')')):
+            return err(f"A non closed bracket accurred!")
+
+        return ok()
+
+
+
+
+
+
+
+
+

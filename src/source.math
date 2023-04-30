@@ -1,0 +1,9 @@
+Func add(a, b) => |a + b|
+Func sub(a, b) => | a - b |
+
+add(1, 9)
+add(2, 2)
+
+sub(23, 47)
+sub(1, 1)
+
