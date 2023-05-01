@@ -16,11 +16,34 @@ $ python main.py
 - making a REPLE to give expressions and get answers from scratch, no libs and no plugin just python built-in functions and string manipulation.
 - REPLE front-end:
 ```console
+
 $ REPLE > (1 + 1)
 ans: 2
+
 $ REPLE > (1 + 1) * (2 * 2)
 ans: 8
 ```
+
+# Define functions
+
+- u can define functions using `Func` keyword
+```console
+
+$ REPLE > Func increment(a, b) => |(a + 1) + (b + 1)|
+$ REPLE > increment(1, 3)
+ans: 6
+```
+# Define variables
+
+- u can define functions using `Func` keyword
+```console
+
+$ REPLE > x = 69
+$ REPLE > x
+ans: 69
+```
+
+- NOTE: `ans` is a special variable which is assigned to latest computed result. type `ans` to access it!
 
 # What data structure I think I will use for this
 - Stacks: for simple calculations

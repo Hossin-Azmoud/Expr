@@ -32,11 +32,7 @@ class Func:
         
         return cache
     
-    def ast(self) -> None:
-        print(self.name)
-        print(self.params)
-        print(self.body)
-    
+   
 def exec_func(fn: Func, args: list[Token]):
     if len(fn.params) != len(args):
         parse_err(f"Syntax error, provided {len(args)} args, but the {fn.name} needs only {len(fn.params)}")

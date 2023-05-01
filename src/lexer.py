@@ -14,7 +14,7 @@ class Lexer:
         self.src    = src
         self.size   = len(self.src)
         self.cur    = 0
-        self.latest = None
+        self.latest_ = None
     
     def set(self, src):
         self.src  = src
@@ -69,8 +69,14 @@ class Lexer:
             self.chop()
     
     def register_(self, token: Token) -> Token:
-        self.latest = token
+        self.latest_ = token
         return token
+    
+    @property 
+    def latest(self):
+        self.latest_ = self.next()
+        self.cur     = 0
+        return self.latest_
 
     def next(self) -> Token:
         self.trim_spaces()
@@ -83,7 +89,7 @@ class Lexer:
              
             return self.register_(Token(
                 NUMBER, 
-                int(token_value_buffer)
+                token_value_buffer
             ))
   
 

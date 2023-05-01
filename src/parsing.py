@@ -12,6 +12,7 @@ from enums import (
     MULT,
     DIV,
     NUMBER,
+    ID,
     OPAR,
     CPAR,
     END
@@ -51,6 +52,14 @@ class Transformer:
             prev  = tmp.peek()
             token  = toks[it]
             it += 1
+
+            if token.token_type == NUMBER:
+                self.stack.push(token)
+                continue
+            
+            if token.token_type == ID:
+                self.stack.push(token)
+                continue
 
             if token.is_number(): 
                 self.stack.push(token)
@@ -113,10 +122,14 @@ class Transformer:
             token = self.lexer.next()
             prev = tmp.peek()
 
-            if token.is_number(): 
+            if token.token_type == NUMBER:
                 self.stack.push(token)
                 continue
             
+            if token.token_type == ID:
+                self.stack.push(token)
+                continue
+
             if token.token_type == CPAR:   # )
                 if prev: 
                     while prev.token_type != OPAR and len(tmp) > 0:
@@ -180,8 +193,8 @@ class Transformer:
             l = self.stack.pop()
             
             if l.value in PREC_TABLE:
-                a = res.pop().value
-                b = res.pop().value
+                a = int(res.pop().value)
+                b = int(res.pop().value)
 
                 if l.value == '+':
                     res.push(Token(NUMBER , a + b))
